@@ -1,0 +1,55 @@
+.App {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.auth-form {
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  width: 320px;
+}
+
+.auth-form h2 {
+  margin-bottom: 20px;
+  font-size: 20px;
+  text-align: center;
+}
+
+.auth-form form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.auth-form input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.auth-form button {
+  padding: 10px;
+  background-color: #4a76a8;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.auth-form button:disabled {
+  background-color: #999;
+  cursor: not-allowed;
+}
+
+.error {
+  color: red;
+  margin-top: 10px;
+  font-size: 14px;
+  text-align: center;
+}
