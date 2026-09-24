@@ -1,13 +1,19 @@
 import { useState } from "react";
 import "./App.css";
 import AuthForm from "./components/AuthForm";
+import MessageForm from "./components/MessageForm";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [credentials, setCredentials] = useState({
+    idInstance: "",
+    apiTokenInstance: "",
+  });
 
   const handleAuthSuccess = (idInstance, apiTokenInstance) => {
     localStorage.setItem("idInstance", idInstance);
     localStorage.setItem("apiTokenInstance", apiTokenInstance);
+    setCredentials({ idInstance, apiTokenInstance });
     setIsAuthenticated(true);
   };
 
@@ -16,9 +22,10 @@ function App() {
       {!isAuthenticated ? (
         <AuthForm onAuthSuccess={handleAuthSuccess} />
       ) : (
-        <div>
-          <h1>Добро пожаловать!</h1>
-        </div>
+        <MessageForm
+          idInstance={credentials.idInstance}
+          apiTokenInstance={credentials.apiTokenInstance}
+        />
       )}
     </div>
   );
