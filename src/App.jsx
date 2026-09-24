@@ -1,13 +1,17 @@
 import { useState } from "react";
 import "./App.css";
 import AuthForm from "./components/AuthForm";
-import MessageForm from "./components/MessageForm";
+import Chat from "./components/Chat";
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [credentials, setCredentials] = useState({
-    idInstance: "",
-    apiTokenInstance: "",
+  const [credentials, setCredentials] = useState(() => {
+    const idInstance = localStorage.getItem("idInstance") || "";
+    const apiTokenInstance = localStorage.getItem("apiTokenInstance") || "";
+    return { idInstance, apiTokenInstance };
+  });
+
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return Boolean(localStorage.getItem("idInstance"));
   });
 
   const handleAuthSuccess = (idInstance, apiTokenInstance) => {
@@ -17,14 +21,22 @@ function App() {
     setIsAuthenticated(true);
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("idInstance");
+    localStorage.removeItem("apiTokenInstance");
+    setCredentials({ idInstance: "", apiTokenInstance: "" });
+    setIsAuthenticated(false);
+  };
+
   return (
     <div className="App">
       {!isAuthenticated ? (
         <AuthForm onAuthSuccess={handleAuthSuccess} />
       ) : (
-        <MessageForm
+        <Chat
           idInstance={credentials.idInstance}
           apiTokenInstance={credentials.apiTokenInstance}
+          onLogout={handleLogout}
         />
       )}
     </div>

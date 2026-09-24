@@ -31,3 +31,21 @@ export const sendMessage = async (
 
   return response.data;
 };
+
+export const receiveNotification = async (idInstance, apiTokenInstance) => {
+  const response = await api.get(
+    `/waInstance${idInstance}/receiveNotification/${apiTokenInstance}`,
+  );
+  return response.data;
+};
+
+export const deleteNotification = async (
+  idInstance,
+  apiTokenInstance,
+  receiptId,
+) => {
+  const response = await api.delete(
+    `/waInstance${idInstance}/deleteNotification/${apiTokenInstance}/${receiptId}`,
+  );
+  return response.data;
+};

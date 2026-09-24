@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { sendMessage } from "../api/greenApi";
 
-function MessageForm({ idInstance, apiTokenInstance }) {
+function MessageForm({ idInstance, apiTokenInstance, onMessageSent }) {
   const [chatId, setChatId] = useState("");
   const [message, setMessage] = useState("");
   const [status, setStatus] = useState("");
@@ -9,12 +9,14 @@ function MessageForm({ idInstance, apiTokenInstance }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!message.trim()) return;
+
     setStatus("");
     setIsLoading(true);
 
     try {
       await sendMessage(idInstance, apiTokenInstance, chatId, message);
-      setStatus("Сообщение отправлено!");
+      onMessageSent(message);
       setMessage("");
     } catch (err) {
       console.error("Ошибка отправки:", err);
@@ -24,36 +26,51 @@ function MessageForm({ idInstance, apiTokenInstance }) {
       } else if (statusCode === 466) {
         setStatus("Инстанс выключен или превышен лимит.");
       } else {
-        setStatus("Не удалось отправить. Проверьте номер и соединение.");
+        setStatus("Не удалось отправить. Проверьте chatId и соединение.");
       }
     } finally {
       setIsLoading(false);
     }
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit(e);
+    }
+  };
+
   return (
-    <div className="message-form">
-      <h3>Отправить сообщение</h3>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Номер получателя (79991112233@c.us)"
-          value={chatId}
-          onChange={(e) => setChatId(e.target.value)}
-          required
-        />
+    <form className="message-form" onSubmit={handleSubmit}>
+      <input
+        className="chat-id-input"
+        type="text"
+        placeholder="Кому (chatId)"
+        value={chatId}
+        onChange={(e) => setChatId(e.target.value)}
+        required
+      />
+
+      <div className="input-row">
         <textarea
-          placeholder="Текст сообщения"
+          className="message-input"
+          placeholder="Введите сообщение..."
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          required
+          onKeyDown={handleKeyDown}
+          rows={1}
         />
-        <button type="submit" disabled={isLoading}>
-          {isLoading ? "Отправляем..." : "Отправить"}
+        <button
+          className="send-btn"
+          type="submit"
+          disabled={isLoading || !message.trim()}
+        >
+          {isLoading ? "..." : "➤"}
         </button>
-      </form>
+      </div>
+
       {status && <p className="status">{status}</p>}
-    </div>
+    </form>
   );
 }
 
